@@ -67,9 +67,24 @@ jobs:
     name: Deploy to server
     needs: build
     runs-on: ubuntu-latest
-    if: ${{ secrets.DEPLOY_HOST != '' }}
     steps:
+      - name: Check deployment secrets
+        id: cfg
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          if [ -z "$DEPLOY_HOST" ]; then
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Skipping deploy (secrets not configured)
+        if: steps.cfg.outputs.configured == 'false'
+        run: echo "Deployment secrets not configured; skipping deploy job."
+
       - name: Deploy over SSH
+        if: steps.cfg.outputs.configured == 'true'
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}
