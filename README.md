@@ -40,3 +40,29 @@ trials: 7000
 ```sh
 go test ./...
 ```
+
+## Контейнеризация
+- Собрать локальный образ:
+  ```sh
+  docker build -t pokerbot:latest .
+  ```
+- Запустить контейнер:
+  ```sh
+  docker run --rm -e TELEGRAM_BOT_TOKEN=ваш_токен pokerbot:latest
+  ```
+- Для фонового запуска и автоперезапуска:
+  ```sh
+  docker run -d --name pokerbot --restart=always \
+    -e TELEGRAM_BOT_TOKEN=ваш_токен \
+    ghcr.io/<ваш-аккаунт>/<репозиторий>:latest
+  ```
+
+## CI/CD и деплой
+- GitHub Actions workflow `.github/workflows/deploy.yml` запускается при пуше в `main` и по запросу.
+- Он выполняет `go test ./...`, собирает Docker-образ и пушит его в GitHub Container Registry (`ghcr.io`).
+- Для автоматического деплоя на сервер установите секреты репозитория:
+  - `DEPLOY_HOST` — адрес сервера с Docker.
+  - `DEPLOY_USER` — SSH-пользователь.
+  - `DEPLOY_SSH_KEY` — приватный ключ для подключения.
+  - `TELEGRAM_BOT_TOKEN` — токен бота, передается контейнеру.
+- После успешного деплоя контейнер запускается/перезапускается под именем `pokerbot` с политикой `--restart=always`.
