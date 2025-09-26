@@ -101,10 +101,10 @@ jobs:
           envs: IMAGE_NAME,TELEGRAM_BOT_TOKEN
           command_timeout: 15m
           script: |
-            docker pull ${IMAGE_NAME}:latest
-            docker stop pokerbot || true
-            docker rm pokerbot || true
-            docker run -d --name pokerbot \
+            sudo docker pull ${IMAGE_NAME}:latest
+            sudo docker stop pokerbot || true
+            sudo docker rm pokerbot || true
+            sudo docker run -d --name pokerbot \
               -e TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN} \
               --restart=always \
               ${IMAGE_NAME}:latest
