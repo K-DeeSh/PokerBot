@@ -18,9 +18,9 @@ func FormatResult(req Request, result poker.SimulationResult) string {
 	fmt.Fprintf(&b, "Игроков за столом: %d (оппонентов: %d)\n", req.Players, req.Players-1)
 	fmt.Fprintf(&b, "Стиль соперников: %s\n", styleDisplay(req.Style))
 	fmt.Fprintf(&b, "Симуляций: %d\n", req.Trials)
-	fmt.Fprintf(&b, "Ваши карты: %s\n", cardsToText(req.Hand))
+	fmt.Fprintf(&b, "Ваши карты: %s\n", CardsToText(req.Hand))
 	if len(req.Board) > 0 {
-		fmt.Fprintf(&b, "Карты на столе: %s\n", cardsToText(req.Board))
+		fmt.Fprintf(&b, "Карты на столе: %s\n", CardsToText(req.Board))
 	} else {
 		b.WriteString("Карты на столе: пока нет\n")
 	}
@@ -28,7 +28,7 @@ func FormatResult(req Request, result poker.SimulationResult) string {
 	return b.String()
 }
 
-func cardsToText(cards []poker.Card) string {
+func CardsToText(cards []poker.Card) string {
 	parts := make([]string, len(cards))
 	for i, c := range cards {
 		parts[i] = c.String()
